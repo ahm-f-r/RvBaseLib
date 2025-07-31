@@ -1,8 +1,7 @@
-#ifndef RV_BASE_LIB_H
-#define RV_BASE_LIB_H
+#ifndef RV_BASE_ENUM_H
+#define RV_BASE_ENUM_H
 
 namespace RvAddrEnums {
-  
   enum eAddrType {
     SysRegAddr      = 0,
     DeviceAddr      = 1,
@@ -12,12 +11,10 @@ namespace RvAddrEnums {
     CacheLineAddr   = 5,
     PageAddr        = 6
   };
-
   enum eOffsetType {
     CacheLineOffset = 0,
     PageOffset      = 1
   };
-
   enum eWordSize {
     Byte  = 0, 
     HWord = 1,
@@ -25,7 +22,6 @@ namespace RvAddrEnums {
     DWord = 3,
     QWord = 4
   };
-
   enum eCacheLineSize {
     Size32B   = 5,
     Size64B   = 6,
@@ -33,7 +29,6 @@ namespace RvAddrEnums {
     Size256B  = 8,
     Size512B  = 9
   };
-
   enum ePageSize {
     Size1k  = 10,
     Size2k  = 11,
@@ -57,6 +52,8 @@ namespace RvDataEnums {
     WordLo  = 0x000000000000ffff,
     HwordHi = 0x000000000000ff00,
     HwordLo = 0x00000000000000ff
+    ByteHi  = 0x00000000000000f0
+    ByteLo  = 0x000000000000000f
   };
 }
 

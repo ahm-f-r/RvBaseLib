@@ -1,0 +1,68 @@
+#ifndef RV_BASE_OBJECTS_H
+#define RV_BASE_OBJECTS_H
+
+#include <iostream>
+#include <cstdint>
+#include <string>
+#include <cassert>
+#include <vector>
+#include <utility>
+#include <map>
+
+#include "RvBaseEnums.h"
+#include "RvBaseField.h"
+#include "RvBaseUtils.h"
+
+using namespace std;
+
+class RvBaseDataObject : public RvBaseObject {
+  private:
+    uint8_t mData {0};
+    bool    mMask {false};
+
+  public:
+    // ========================================================================
+    explicit RvBaseDataObject(
+      uint8_t               _data,
+      bool                  _mask,
+      string                _name = "RvBaseDataObject", 
+      uint64_t              _id = 0,
+      RvBaseObject const *  _parent = nullptr) : 
+        mData(_data),
+        mMask(_mask) {
+    // ========================================================================
+      RvBaseObject(_name , _id, _parent);
+    }
+
+    // ========================================================================
+    ~RvBaseDataObject() {
+    // ========================================================================
+    }
+
+    // ========================================================================
+    uint8_t Data() const {
+    // ========================================================================
+      return mMask ? mData : 0;
+    }
+
+    // ========================================================================
+    void Data(uint8_t _data, bool _mask = true) {
+    // ========================================================================
+      mData = _data;
+      mMask = _mask;
+    }
+
+    // ========================================================================
+    template <typename T> void SetProperty(string _name, T _value) {
+    // ========================================================================
+      Set<T>(_name, _value);
+    }
+
+    // ========================================================================
+    template <typename T> optional<T> GetProperty(string _name) const {
+    // ========================================================================
+      return Get<T>(_name);
+    }
+};
+
+#endif

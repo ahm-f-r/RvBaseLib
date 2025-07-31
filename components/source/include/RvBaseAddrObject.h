@@ -1,0 +1,68 @@
+#ifndef RV_BASE_OBJECT_H
+#define RV_BASE_OBJECT_H
+
+#include <iostream>
+#include <cstdint>
+#include <string>
+#include <cassert>
+#include <vector>
+#include <utility>
+#include <map>
+
+#include "RvBaseEnums.h"
+#include "RvBaseObject.h"
+
+using namespace std;
+
+class RvBaseAddrObject : public RvBaseObject {
+  private:
+    uint64_t mAddr {0};
+  
+  public:
+    // ========================================================================
+    explicit RvBaseAddrObject(
+      uint64_t              _addr,
+      string                _name   = "RvBaseAddrObject", 
+      uint64_t              _id     = 0,
+      RvBaseObject const *  _parent = nullptr) : 
+        mAddr (_addr)
+    // ========================================================================
+    {
+      RvBaseObject(_name, _id, _parent);
+    }
+ 
+    // ========================================================================    
+    uint64_t Addr() const
+    // ========================================================================
+    {
+      return mAddr;
+    }
+
+    // ========================================================================    
+    template <typename T> uint64_t Addr() const {
+    // ========================================================================
+      return mAddr & RvBaseAddrUtils::Mask<T>();
+    }
+
+    // ========================================================================
+    void Addr(uint64_t _addr) {
+    // ========================================================================
+      mAddr = _addr;
+    }
+
+    // ========================================================================
+    template <typename T> void SetProperty(string _name, T _value)
+    // ========================================================================
+    {
+      Set<T>(_name, _value);
+    }
+
+    // ========================================================================
+    template <typename T> optional<T> GetProperty(string _name) const
+    // ========================================================================
+    {
+      return Get<T>(_name);
+    }
+};
+
+#endif
