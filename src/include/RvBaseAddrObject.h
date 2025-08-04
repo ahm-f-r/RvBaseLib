@@ -1,5 +1,5 @@
-#ifndef RV_BASE_OBJECT_H
-#define RV_BASE_OBJECT_H
+#ifndef RV_BASE_ADDR_OBJECT_H
+#define RV_BASE_ADDR_OBJECT_H
 
 #include <iostream>
 #include <cstdint>
@@ -9,6 +9,7 @@
 #include <utility>
 #include <map>
 
+#include "RvBaseUtils.h"
 #include "RvBaseEnums.h"
 #include "RvBaseObject.h"
 
@@ -40,7 +41,7 @@ class RvBaseAddrObject : public RvBaseObject {
     {
       RvBaseObject(_name, _id, _parent);
     }
- 
+
     // ========================================================================    
     uint64_t Addr() const
     // ========================================================================

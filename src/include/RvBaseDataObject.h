@@ -10,15 +10,16 @@
 #include <map>
 
 #include "RvBaseEnums.h"
-#include "RvBaseField.h"
 #include "RvBaseUtils.h"
+#include "RvBaseObject.h"
+#include "RvBaseProperty.h"
 
 using namespace std;
 
 class RvBaseDataObject : public RvBaseObject {
   private:
-    uint8_t mData {0};
-    bool    mMask {false};
+    uint8_t mData {};
+    bool    mMask {};
 
   public:
     // ========================================================================
@@ -27,7 +28,7 @@ class RvBaseDataObject : public RvBaseObject {
       bool                  _mask,
       string                _name = "RvBaseDataObject", 
       uint64_t              _id = 0,
-      RvBaseObject const *  _parent = nullptr) : 
+      shared_ptr<RvBaseObject const *  _parent = nullptr) : 
         mData(_data),
         mMask(_mask) {
     // ========================================================================
