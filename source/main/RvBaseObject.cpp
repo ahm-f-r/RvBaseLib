@@ -1,33 +1,33 @@
 #include "RvBaseObject.h"
 
-using sBoolProp_t = shared_ptr<RvBaseBoolProperty>;
-using sStrProp_t  = shared_ptr<RvBaseStringProperty>;
-using sUIntProp_t = shared_ptr<RvBaseUInt64Property>;
-using sConstObj_t = shared_ptr<const RvBaseObject>;
-using sObj_t      = shared_ptr<RvBaseObject>;
-using vProp_t     = variant<shared_ptr<RvBaseBoolProperty>,
-                            shared_ptr<RvBaseStringProperty>,
-                            shared_ptr<RvBaseUInt64Property> >;
-using vValue_t    = variant<bool, uint64_t, string>;
+  using sConstObj_t = shared_ptr<const RvBaseObject>;
+  using sObj_t      = shared_ptr<RvBaseObject>;
+  using vProp_t     = variant<shared_ptr<RvBaseBoolProperty>,
+                              shared_ptr<RvBaseStringProperty>,
+                              shared_ptr<RvBaseUInt64Property> >;
+  using sBoolProp_t = shared_ptr<RvBaseBoolProperty>;
+  using sStrProp_t  = shared_ptr<RvBaseStringProperty>;
+  using sUIntProp_t = shared_ptr<RvBaseUInt64Property>;
+  using vValue_t    = variant<bool, uint64_t, string>;
 
 // ========================================================================
-explicit RvBaseObject::RvBaseObject(
-  string      _name   = "Undefined", 
-  uint64_t    _id     = 0,
-  sConstObj_t _parent = nullptr) :
+RvBaseObject::RvBaseObject(
+  string      _name, 
+  uint64_t    _id,
+  sConstObj_t _parent) :
     sParent (_parent),
     mId     (_id),
     mName   (_name)
 // ========================================================================
 {
-  ++mRefCount;
+  ++mBaseObjectRefCount;
 }
 
 // ========================================================================
 RvBaseObject::~RvBaseObject()
 // ========================================================================
 {
-  --mRefCount;
+  --mBaseObjectRefCount;
 }
 
 // ========================================================================
@@ -43,7 +43,7 @@ RvBaseObject::RvBaseObject(RvBaseObject const & _other) :
 }
 
 // ========================================================================
-RvBaseObject::RvBaseObject & operator=(RvBaseObject const & _other)
+RvBaseObject & RvBaseObject::operator=(RvBaseObject const & _other)
 // ========================================================================
 {
   Parent(_other.Parent());
@@ -234,9 +234,7 @@ void RvBaseObject::ClearChildObjPool()
 }
 
 // ========================================================================
-void RvBaseObject::CopyPropertyPool(
-  RvBaseObject const & _other, 
-  bool _merge = false)
+void RvBaseObject::CopyPropertyPool(RvBaseObject const & _other, bool _merge)
 // ========================================================================
 {
   if (!_merge) {
@@ -248,9 +246,7 @@ void RvBaseObject::CopyPropertyPool(
 }
 
 // ========================================================================
-void RvBaseObject::CopyChildObjPool(
-  RvBaseObject const & _other, 
-  bool _merge = false)
+void RvBaseObject::CopyChildObjPool(RvBaseObject const & _other, bool _merge)
 // ========================================================================
 {
   if (!_merge) {

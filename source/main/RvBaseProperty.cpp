@@ -2,130 +2,136 @@
 
 using namespace std;
 
-explicit RvBaseProperty::RvBaseProperty(
-    string                          _name,
-    T                               _value) :
+// ========================================================================
+template <typename T> RvBaseProperty<T>::RvBaseProperty(
+  string  _name,
+  T       _value) :
     mName   (_name),
     mValue  (_value)
 // ========================================================================
 {
-    SetValid();
-    ++mRefCount;
+  SetValid();
+  ++mBasePropertyRefCount;
 }
 
 // ========================================================================
-~RvBaseProperty::RvBaseProperty()
+template <typename T> RvBaseProperty<T>::~RvBaseProperty()
 // ========================================================================
 {
-    --mRefCount;
+  --mBasePropertyRefCount;
 }
 
 // ========================================================================
-RvBaseProperty::RvBaseProperty(RvBaseProperty const & _other)
+template <typename T> RvBaseProperty<T>::RvBaseProperty(RvBaseProperty const & _other)
 // ========================================================================
 {
-    if (dynamic_cast<T>(_other.Value())) {
+  if (dynamic_cast<T>(_other.Value())) {
     Name    ( _other.Name()     );
     Value   ( _other.Value()    );
     return;
-    }
-    assert(("Type mismatch. Aborting.", false));
+  }
+  assert(("Type mismatch. Aborting.", false));
 }
 
 // ========================================================================
-RvBaseProperty & RvBaseProperty::operator=(RvBaseProperty const & _other)
+template <typename T> RvBaseProperty<T> & RvBaseProperty<T>::operator=(RvBaseProperty const & _other)
 // ========================================================================
 {
-    if (dynamic_cast<T>(_other.Value())) {
+  if (dynamic_cast<T>(_other.Value())) {
     Name    ( _other.Name()   );
     Value   ( _other.Value()  );
     return *this;
-    }
-    assert(("Type mismatch. Aborting.", false));
+  }
+  assert(("Type mismatch. Aborting.", false));
 }
 
 // ========================================================================
-bool RvBaseProperty::operator==(RvBaseProperty const & _other) 
+template <typename T> bool RvBaseProperty<T>::operator==(RvBaseProperty const & _other) 
 // ========================================================================
 {
-    if (!dynamic_cast<T>(_other.Value())) {
+  if (!dynamic_cast<T>(_other.Value())) {
     return false;
-    }
-    return (Name() == _other.Name()) and (Value() == _other.Value());
+  }
+  return (Name() == _other.Name()) and (Value() == _other.Value());
 }
 
 // Methods to access members
 // ========================================================================
-string RvBaseProperty::Name() const
+template <typename T> string RvBaseProperty<T>::Name() const
 // ========================================================================
 {
-    return mName;
+  return mName;
 }
 
 // ========================================================================
-void RvBaseProperty::Name(string _name)
+template <typename T> void RvBaseProperty<T>::Name(string _name)
 // ========================================================================
 {
-    mName = _name;
+  mName = _name;
 }
 
 // ========================================================================
-void RvBaseProperty::Value(T _value) 
+template <typename T> void RvBaseProperty<T>::Value(T _value) 
 // ========================================================================
 {
-    mValue = _value;
-    SetValid();
+  mValue = _value;
+  SetValid();
 }
 
 // ======================================================================== 
-T RvBaseProperty::Value() const
+template <typename T> T RvBaseProperty<T>::Value() const
 // ========================================================================
 {
-    if (IsValid()) return mValue;
-    else assert(("Value() called with no prior initialization.", false));
+  if (IsValid()) return mValue;
+  else assert(("Value() called with no prior initialization.", false));
 }
 
 // Helper Function
 // ========================================================================
-void RvBaseProperty::Print() const 
+template <typename T> void RvBaseProperty<T>::Print() const 
 // ========================================================================
 {
-    cout << Name() << " : " << Value() << endl;
+  cout << Name() << " : " << Value() << endl;
 }
 
 // ========================================================================
-void RvBaseProperty::ClearValid()
+template <typename T> void RvBaseProperty<T>::ClearValid()
 // ========================================================================
 {
-    mValid = false;
+  mValid = false;
 }
 
 // ========================================================================
-void RvBaseProperty::SetValid()
+template <typename T> void RvBaseProperty<T>::SetValid()
 // ========================================================================
 {
-    mValid = true;
+  mValid = true;
 }
 
 // ========================================================================
-bool RvBaseProperty::IsValid() const
+template <typename T> bool RvBaseProperty<T>::IsValid() const
 // ========================================================================
 {
-    return mValid;
-} 
+  return mValid;
+}
 
 
 // ========================================================================
-explicit RvBaseBoolProperty::RvBaseBoolProperty(
+RvBaseBoolProperty::RvBaseBoolProperty(
   string    _name,
   bool      _value) :
     RvBaseProperty<bool>(_name, _value)
 // ========================================================================
 {}
 
+// ========================================================================
+RvBaseBoolProperty::~RvBaseBoolProperty()
+// ========================================================================
+{}
+
 
 // ========================================================================
-explicit RvBaseUInt64Property::RvBaseUInt64Property(
+RvBaseUInt64Property::RvBaseUInt64Property(
   string    _name,
   uint64_t  _value) :
     RvBaseProperty<uint64_t>(_name, _value)
@@ -133,9 +139,20 @@ explicit RvBaseUInt64Property::RvBaseUInt64Property(
 {}
 
 // ========================================================================
-explicit RvBaseStringProperty::RvBaseStringProperty(
+RvBaseUInt64Property::~RvBaseUInt64Property()
+// ========================================================================
+{}
+
+
+// ========================================================================
+RvBaseStringProperty::RvBaseStringProperty(
   string  _name,
   string  _value) :
     RvBaseProperty<string>(_name, _value)
+// ========================================================================
+{}
+
+// ========================================================================
+RvBaseStringProperty::~RvBaseStringProperty()
 // ========================================================================
 {}

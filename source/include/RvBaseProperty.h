@@ -16,10 +16,10 @@ using namespace std;
 template <typename T> class RvBaseProperty
 {
   private :
-    string                          mName {"Undefined"};    
-    T                               mValue;
-    bool                            mValid {false};
-    static uint64_t                 mRefCount;
+    string            mName {"Undefined"};    
+    T                 mValue;
+    bool              mValid {false};
+    static uint64_t   mBasePropertyRefCount;
 
   public :
     explicit RvBaseProperty(string _name, T _value);
@@ -40,13 +40,14 @@ template <typename T> class RvBaseProperty
     void    SetValid();
     bool    IsValid() const;
 };
-template < typename T > uint64_t RvBaseProperty<T>::mRefCount = 0;
+template < typename T > uint64_t RvBaseProperty<T>::mBasePropertyRefCount = 0;
 
 
-class RvBaseBoolProperty : public RvBaseProperty<bool> 
+class RvBaseBoolProperty : public RvBaseProperty<bool>
 {
   public:
     explicit RvBaseBoolProperty(string _name, bool _value);
+    ~RvBaseBoolProperty();
 };
 
 
@@ -54,6 +55,7 @@ class RvBaseUInt64Property : public RvBaseProperty<uint64_t>
 {
   public:
     explicit RvBaseUInt64Property(string _name, uint64_t _value);
+    ~RvBaseUInt64Property();
 };
 
 
@@ -61,6 +63,7 @@ class RvBaseStringProperty : public RvBaseProperty<string>
 {
   public: 
     explicit RvBaseStringProperty(string _name, string _value);
+    ~RvBaseStringProperty();
 };
 
 #endif
