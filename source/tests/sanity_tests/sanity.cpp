@@ -25,8 +25,8 @@ int main () {
   RvBaseProperty<string> const * prop2 = new RvBaseProperty<string>("string", "hello");
   prop2->Print();
 
-  shared_ptr<RvBaseObject> rv0 = make_shared<RvBaseObject>("Parent", 0);
-  shared_ptr<RvBaseObject> rv1 = make_shared<RvBaseObject>("Child",  1, rv0);
+  shared_ptr<RvBaseObject> rv0 = make_shared<RvBaseObject>("Parent",     0);
+  shared_ptr<RvBaseObject> rv1 = make_shared<RvBaseObject>("Child",      1, rv0);
   shared_ptr<RvBaseObject> rv2 = make_shared<RvBaseObject>("GrandChild", 2, rv1);
   shared_ptr<RvBaseObject> rv3 = make_shared<RvBaseObject>("GrandChild", 3, rv1);
 
@@ -45,8 +45,35 @@ int main () {
   cout << "Scope: " << rv2->Scope() << endl;
   cout << "Scope: " << rv3->Scope() << endl;
 
-  // variant<bool, uint64_t, string> value = to_string("value");
-  // rv0->Property(to_string("key"), value);
+  variant<bool, string, uint64_t> val0 = "value";
+  variant<bool, string, uint64_t> val1 = 55ull;
+  variant<bool, string, uint64_t> val2 = false;
+
+  rv0->Property("string",   val0);  
+  rv0->Property("uint64_t", val1);
+  rv0->Property("bool",     val2);
+  
+  cout  << "string = " 
+        << (
+          rv0->Property("string").has_value() ? 
+            get<string>(rv0->Property("string").value()) : 
+            static_cast<string>(0)
+          )
+        << endl; 
+  cout  << "uint64_t = " 
+        << (
+          rv0->Property("uint64_t").has_value() ? 
+            get<uint64_t>(rv0->Property("uint64_t").value()) : 
+            static_cast<uint64_t>(0)
+          )
+        << endl; 
+  cout  << "bool = "
+        << (
+          rv0->Property("bool").has_value() ? 
+            get<bool>(rv0->Property("bool").value()) : 
+            static_cast<bool>(0)
+          )
+        << endl; 
 
   return 0;
 }
