@@ -99,33 +99,33 @@ void RvBaseObject::Name(string _name)
 
 // Methods to access Properties and Child Objects
 // ========================================================================
-optional</*vValue_t*/ variant<bool, string, uint64_t> > RvBaseObject::Property(string _name) const
+optional<variant<bool, string, uint64_t> > RvBaseObject::Property(string _name) const
 // ========================================================================
 {
   auto const & it = mPropertyPool.find(_name);
   if (it == mPropertyPool.end()) {
     return nullopt;
   }
-  if (holds_alternative<shared_ptr<RvBaseBoolProperty>>(it->second)) {
-    auto result = get<shared_ptr<RvBaseBoolProperty>>(it->second);
-    /*vValue_t*/ variant<bool, string, uint64_t> prop = result->Value();
+  if (holds_alternative<shared_ptr<RvBaseProperty<bool> > >(it->second)) {
+    auto result = get<shared_ptr<RvBaseProperty<bool> > >(it->second);
+    variant<bool, string, uint64_t> prop = result->Value();
     return make_optional(prop);
   }
-  if (holds_alternative<shared_ptr<RvBaseStringProperty>>(it->second)) {
-    auto result = get<shared_ptr<RvBaseStringProperty>>(it->second);
-    /*vValue_t*/ variant<bool, string, uint64_t> prop = result->Value();
+  if (holds_alternative<shared_ptr<RvBaseProperty<string> > >(it->second)) {
+    auto result = get<shared_ptr<RvBaseProperty<string> > >(it->second);
+    variant<bool, string, uint64_t> prop = result->Value();
     return make_optional(prop);
   }
-  if (holds_alternative<shared_ptr<RvBaseUInt64Property>>(it->second)) {
-    auto result = get<shared_ptr<RvBaseUInt64Property>>(it->second);
-    /*vValue_t*/ variant<bool, string, uint64_t> prop = result->Value();
+  if (holds_alternative<shared_ptr<RvBaseProperty<uint64_t> > >(it->second)) {
+    auto result = get<shared_ptr<RvBaseProperty<uint64_t> > >(it->second);
+    variant<bool, string, uint64_t> prop = result->Value();
     return make_optional(prop);
   }
   return nullopt;
 }
 
 // ========================================================================
-void RvBaseObject::Property(string _name, /*vValue_t*/ variant<bool, string, uint64_t> _value)
+void RvBaseObject::Property(string _name, variant<bool, string, uint64_t> _value)
 // ========================================================================
 {
   bool is_bool_prop = holds_alternative<bool>(_value);
@@ -135,42 +135,39 @@ void RvBaseObject::Property(string _name, /*vValue_t*/ variant<bool, string, uin
   if (Property(_name).has_value()) { 
     if (is_bool_prop) {
       if (holds_alternative<bool>(Property(_name).value())) {
-        auto sptr_prop = get<shared_ptr<RvBaseBoolProperty>>(mPropertyPool[_name]);
+        auto sptr_prop = get<shared_ptr<RvBaseProperty<bool> > >(mPropertyPool[_name]);
         sptr_prop->Value(get<bool>(_value));
         return;
       }
     }
     if (is_uint_prop) {
       if (holds_alternative<uint64_t>(Property(_name).value())) {
-        auto sptr_prop = get<shared_ptr<RvBaseUInt64Property>>(mPropertyPool[_name]);
+        auto sptr_prop = get<shared_ptr<RvBaseProperty<uint64_t> > >(mPropertyPool[_name]);
         sptr_prop->Value(get<uint64_t>(_value));
         return;
       }
     }
     if (is_char_prop) {
       if (holds_alternative<string>(Property(_name).value())) {
-        auto sptr_prop = get<shared_ptr<RvBaseStringProperty>>(mPropertyPool[_name]);
+        auto sptr_prop = get<shared_ptr<RvBaseProperty<string> > >(mPropertyPool[_name]);
         sptr_prop->Value(get<string>(_value));
         return;
       }
     }
   }
-  /*vProp_t*/ variant<shared_ptr<RvBaseBoolProperty>,
-                            shared_ptr<RvBaseStringProperty>,
-                            shared_ptr<RvBaseUInt64Property> > new_prop;
+  variant<shared_ptr<RvBaseProperty<bool> >,
+          shared_ptr<RvBaseProperty<string> >,
+          shared_ptr<RvBaseProperty<uint64_t> > > new_prop;
   if (is_bool_prop) {
-    new_prop = make_shared<RvBaseBoolProperty>(_name, get<bool>(_value));
+    new_prop = make_shared<RvBaseProperty<bool> >(_name, get<bool>(_value));
   }
   if (is_uint_prop) {
-    new_prop = make_shared<RvBaseUInt64Property>(_name, get<uint64_t>(_value));
+    new_prop = make_shared<RvBaseProperty<uint64_t> >(_name, get<uint64_t>(_value));
   }
   if (is_char_prop) {
-    new_prop = make_shared<RvBaseStringProperty>(_name, get<string>(_value));
+    new_prop = make_shared<RvBaseProperty<string> >(_name, get<string>(_value));
   }
-  // cout << (get<shared_ptr<RvBaseStringProperty> >(new_prop))->Name() << endl;
-  // cout << (get<shared_ptr<RvBaseStringProperty> >(new_prop))->Value() << endl;
   mPropertyPool.insert(make_pair(_name, new_prop));
-  // cout << get<shared_ptr<RvBaseStringProperty> >(mPropertyPool[_name])->Value() << endl;
 }
 
 // ========================================================================

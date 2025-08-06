@@ -8,9 +8,6 @@
 #include <vector>
 #include <utility>
 
-#include "RvBaseUtils.h"
-#include "RvBaseEnums.h"
-
 using namespace std;
 
 template <typename T> class RvBaseProperty
@@ -40,29 +37,5 @@ template <typename T> class RvBaseProperty
     void    SetValid();
     bool    IsValid() const;
 };
-
-
-// class RvBaseBoolProperty : public RvBaseProperty<bool>
-// {
-//   public:
-//     explicit RvBaseBoolProperty(string _name, bool _value);
-//     ~RvBaseBoolProperty();
-// };
-
-
-// class RvBaseUInt64Property : public RvBaseProperty<uint64_t>
-// {
-//   public:
-//     explicit RvBaseUInt64Property(string _name, uint64_t _value);
-//     ~RvBaseUInt64Property();
-// };
-
-
-// class RvBaseStringProperty : public RvBaseProperty<string>
-// {
-//   public: 
-//     explicit RvBaseStringProperty(string _name, string _value);
-//     ~RvBaseStringProperty();
-// };
 
 #endif

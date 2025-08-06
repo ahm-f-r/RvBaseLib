@@ -27,33 +27,33 @@ template <typename T> RvBaseProperty<T>::~RvBaseProperty()
 template <typename T> RvBaseProperty<T>::RvBaseProperty(RvBaseProperty const & _other)
 // ========================================================================
 {
-  if (dynamic_cast<T>(_other.Value())) {
-    Name    ( _other.Name()     );
-    Value   ( _other.Value()    );
-    return;
-  }
-  assert(("Type mismatch. Aborting.", false));
+  // TODO: Check T == {int, uint8_t, uint32_t, uint64_t, string, bool}
+  Name    ( _other.Name()     );
+  Value   ( _other.Value()    );
+  return;
+
+  cout << "[Error] Type mismatch. Aborting." << endl;
+  assert(false);
 }
 
 // ========================================================================
 template <typename T> RvBaseProperty<T> & RvBaseProperty<T>::operator=(RvBaseProperty const & _other)
 // ========================================================================
 {
-  if (dynamic_cast<T>(_other.Value())) {
-    Name    ( _other.Name()   );
-    Value   ( _other.Value()  );
-    return *this;
-  }
-  assert(("Type mismatch. Aborting.", false));
+  // TODO: Check T == {int, uint8_t, uint32_t, uint64_t, string, bool}
+  Name    ( _other.Name()   );
+  Value   ( _other.Value()  );
+  return *this;
+
+  cout << "[Error] Type mismatch. Aborting." << endl;
+  assert(false);
 }
 
 // ========================================================================
 template <typename T> bool RvBaseProperty<T>::operator==(RvBaseProperty const & _other) 
 // ========================================================================
 {
-  if (!dynamic_cast<T>(_other.Value())) {
-    return false;
-  }
+  // TODO: Check T == {int, uint8_t, uint32_t, uint64_t, string, bool}
   return (Name() == _other.Name()) and (Value() == _other.Value());
 }
 
@@ -85,7 +85,8 @@ template <typename T> T RvBaseProperty<T>::Value() const
 // ========================================================================
 {
   if (IsValid()) return mValue;
-  else assert(("Value() called with no prior initialization.", false));
+  cout << "[Error] Value() called with no prior initialization." << endl;
+  assert(false);
 }
 
 // Helper Function
@@ -93,7 +94,7 @@ template <typename T> T RvBaseProperty<T>::Value() const
 template <typename T> void RvBaseProperty<T>::Print() const 
 // ========================================================================
 {
-  cout << Name() << " : " << Value() << endl;
+  cout << Name() << " = " << Value() << endl;
 }
 
 // ========================================================================
@@ -117,44 +118,11 @@ template <typename T> bool RvBaseProperty<T>::IsValid() const
   return mValid;
 }
 
-
-// // ========================================================================
-// RvBaseBoolProperty::RvBaseBoolProperty(
-//   string    _name,
-//   bool      _value) :
-//     RvBaseProperty<bool>(_name, _value)
-// // ========================================================================
-// {}
-
-// // ========================================================================
-// RvBaseBoolProperty::~RvBaseBoolProperty()
-// // ========================================================================
-// {}
-
-
-// // ========================================================================
-// RvBaseUInt64Property::RvBaseUInt64Property(
-//   string    _name,
-//   uint64_t  _value) :
-//     RvBaseProperty<uint64_t>(_name, _value)
-// // ========================================================================
-// {}
-
-// // ========================================================================
-// RvBaseUInt64Property::~RvBaseUInt64Property()
-// // ========================================================================
-// {}
-
-
-// // ========================================================================
-// RvBaseStringProperty::RvBaseStringProperty(
-//   string  _name,
-//   string  _value) :
-//     RvBaseProperty<string>(_name, _value)
-// // ========================================================================
-// {}
-
-// // ========================================================================
-// RvBaseStringProperty::~RvBaseStringProperty()
-// // ========================================================================
-// {}
+// ========================================================================
+// Note:
+// ========================================================================
+// * Only basic datatypes are supported by default.
+// * See examples on how user data types can be implemented.
+template class RvBaseProperty<bool>;
+template class RvBaseProperty<string>;
+template class RvBaseProperty<uint64_t>;
