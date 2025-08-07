@@ -12,6 +12,7 @@
 #include <optional>
 #include <variant>
 
+#include "RvBaseCommon.d"
 #include "RvBaseProperty.h"
 
 using namespace std;
@@ -66,8 +67,8 @@ class RvBaseObject {
     string  Scope() const;
     void    ClearPropertyPool();
     void    ClearChildObjPool();
-    void    CopyPropertyPool(RvBaseObject const & _other, bool _merge = false);
-    void    CopyChildObjPool(RvBaseObject const & _other, bool _merge = false);
+    void    CopyPropertyPool(RvBaseObject const & _other, bool _merge = false, bool deep_copy = false);
+    void    CopyChildObjPool(RvBaseObject const & _other, bool _merge = false, bool deep_copy = false);
 };
 
 #endif

@@ -50,21 +50,21 @@ class RvBaseAddrObject : public RvBaseObject {
     }
 
     // ========================================================================    
-    template <typename T> uint64_t Addr() const
+    TEMPLATE_t uint64_t Addr() const
     // ========================================================================
     {
       return mAddr & RvBaseAddrUtils::Mask<T>();
     }
 
     // ========================================================================    
-    template <typename T> uint64_t Offset() const
+    TEMPLATE_t uint64_t Offset() const
     // ========================================================================
     {
       return mAddr & RvBaseAddrUtils::Offset<T>();
     }
 
     // ========================================================================    
-    template <typename T> uint64_t Next() const
+    TEMPLATE_t uint64_t Next() const
     // ========================================================================
     {
       return mAddr & RvBaseAddrUtils::Offset<T>();
@@ -78,14 +78,14 @@ class RvBaseAddrObject : public RvBaseObject {
     }
     
     // // ========================================================================
-    // template <typename T> void Property(string _name, T _value)
+    // TEMPLATE_t void Property(string _name, T _value)
     // // ========================================================================
     // {
     //   Property<T>(_name, _value);
     // }
 
     // // ========================================================================
-    // template <typename T> optional<T> Property(string _name) const
+    // TEMPLATE_t optional<T> Property(string _name) const
     // // ========================================================================
     // {
     //   return Get<T>(_name);

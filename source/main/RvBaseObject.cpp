@@ -178,15 +178,15 @@ shared_ptr<RvBaseObject> RvBaseObject::ChildObj(string _name) const
   if (it == mChildObjPool.end()) {
     return shared_ptr<RvBaseObject>(nullptr);
   }
-  return it->second;;
+  return it->second;
 }
 
 // ========================================================================
 void RvBaseObject::ChildObj(string _name, uint64_t _id)
 // ========================================================================
 {
-  if (ChildObj(_name)) {
-    mChildObjPool.erase(_name);
+  if (ChildObj(_name) and (ChildObj(_name)->Id() == _id)) {
+    return;
   }
   shared_ptr<RvBaseObject> new_child = make_shared<RvBaseObject>(
     _name, 
@@ -225,25 +225,54 @@ void RvBaseObject::ClearChildObjPool()
 }
 
 // ========================================================================
-void RvBaseObject::CopyPropertyPool(RvBaseObject const & _other, bool _merge)
+void RvBaseObject::CopyPropertyPool(RvBaseObject const & _other, bool _merge, bool deep_copy)
 // ========================================================================
 {
+  bool is_bool_prop {false};
+  bool is_uint_prop {false};
+  bool is_char_prop {false};
+  variant<bool, string, uint64_t> new_value;
   if (!_merge) {
     ClearPropertyPool();
   }
   for (auto const & item : _other.mPropertyPool) {
-    mPropertyPool[item.first] = item.second;
+    if (deep_copy) {
+      cout << item.first << endl;
+      is_bool_prop = _other.Property(item.first).has_value() and holds_alternative<bool>(_other.Property(item.first).value());
+      is_uint_prop = _other.Property(item.first).has_value() and holds_alternative<uint64_t>(_other.Property(item.first).value());
+      is_char_prop = _other.Property(item.first).has_value() and holds_alternative<string>(_other.Property(item.first).value());
+      if (is_bool_prop) {
+        new_value = get<bool>(_other.Property(item.first).value());
+      }
+      if (is_uint_prop) {
+        new_value = get<uint64_t>(_other.Property(item.first).value());
+      }
+      if (is_char_prop) {
+        new_value = get<string>(_other.Property(item.first).value());
+      }
+      Property(item.first, new_value);
+      continue;
+    }
+    // Shallow Copy
+    mPropertyPool[item.first] = item.second; 
   }
 }
 
 // ========================================================================
-void RvBaseObject::CopyChildObjPool(RvBaseObject const & _other, bool _merge)
+void RvBaseObject::CopyChildObjPool(RvBaseObject const & _other, bool _merge, bool _deep_copy)
 // ========================================================================
 {
   if (!_merge) {
     ClearChildObjPool();
   }
   for (auto const & item : _other.mChildObjPool) {
+    // Deep Copy
+    if (_deep_copy) {
+      ChildObj(item.first, item.second->Id());
+      ChildObj(item.first)->CopyPropertyPool(*item.second, _merge, _deep_copy); 
+      continue;
+    }
+    // Shallow Copy
     mChildObjPool[item.first] = item.second;
   }
 }

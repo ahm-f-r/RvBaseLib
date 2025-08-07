@@ -54,13 +54,13 @@ class RvBaseDataObject : public RvBaseObject {
     }
 
     // ========================================================================
-    template <typename T> void SetProperty(string _name, T _value) {
+    TEMPLATE_t void SetProperty(string _name, T _value) {
     // ========================================================================
       Set<T>(_name, _value);
     }
 
     // ========================================================================
-    template <typename T> optional<T> GetProperty(string _name) const {
+    TEMPLATE_t optional<T> GetProperty(string _name) const {
     // ========================================================================
       return Get<T>(_name);
     }

@@ -8,9 +8,11 @@
 #include <vector>
 #include <utility>
 
+#include "RvBaseCommon.d"
+
 using namespace std;
 
-template <typename T> class RvBaseProperty
+TEMPLATE_t class RvBaseProperty
 {
   private :
     string            mName {"Undefined"};    

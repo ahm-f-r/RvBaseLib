@@ -2,10 +2,10 @@
 
 using namespace std;
 
-template <typename T> uint64_t RvBaseProperty<T>::mBasePropertyRefCount = 0;
+TEMPLATE_t uint64_t RvBaseProperty<T>::mBasePropertyRefCount = 0;
 
 // ========================================================================
-template <typename T> RvBaseProperty<T>::RvBaseProperty(
+TEMPLATE_t RvBaseProperty<T>::RvBaseProperty(
   string  _name,
   T       _value) :
     mName   (_name),
@@ -17,32 +17,31 @@ template <typename T> RvBaseProperty<T>::RvBaseProperty(
 }
 
 // ========================================================================
-template <typename T> RvBaseProperty<T>::~RvBaseProperty()
+TEMPLATE_t RvBaseProperty<T>::~RvBaseProperty()
 // ========================================================================
 {
   --mBasePropertyRefCount;
 }
 
 // ========================================================================
-template <typename T> RvBaseProperty<T>::RvBaseProperty(RvBaseProperty const & _other)
+TEMPLATE_t RvBaseProperty<T>::RvBaseProperty(RvBaseProperty const & _other)
 // ========================================================================
 {
   // TODO: Check T == {int, uint8_t, uint32_t, uint64_t, string, bool}
-  Name    ( _other.Name()     );
-  Value   ( _other.Value()    );
+  Name  ( _other.Name()  );
+  Value ( _other.Value() );
   return;
-
   cout << "[Error] Type mismatch. Aborting." << endl;
   assert(false);
 }
 
 // ========================================================================
-template <typename T> RvBaseProperty<T> & RvBaseProperty<T>::operator=(RvBaseProperty const & _other)
+TEMPLATE_t RvBaseProperty<T> & RvBaseProperty<T>::operator=(RvBaseProperty const & _other)
 // ========================================================================
 {
   // TODO: Check T == {int, uint8_t, uint32_t, uint64_t, string, bool}
-  Name    ( _other.Name()   );
-  Value   ( _other.Value()  );
+  Name  ( _other.Name()  );
+  Value ( _other.Value() );
   return *this;
 
   cout << "[Error] Type mismatch. Aborting." << endl;
@@ -50,7 +49,7 @@ template <typename T> RvBaseProperty<T> & RvBaseProperty<T>::operator=(RvBasePro
 }
 
 // ========================================================================
-template <typename T> bool RvBaseProperty<T>::operator==(RvBaseProperty const & _other) 
+TEMPLATE_t bool RvBaseProperty<T>::operator==(RvBaseProperty const & _other) 
 // ========================================================================
 {
   // TODO: Check T == {int, uint8_t, uint32_t, uint64_t, string, bool}
@@ -59,21 +58,21 @@ template <typename T> bool RvBaseProperty<T>::operator==(RvBaseProperty const & 
 
 // Methods to access members
 // ========================================================================
-template <typename T> string RvBaseProperty<T>::Name() const
+TEMPLATE_t string RvBaseProperty<T>::Name() const
 // ========================================================================
 {
   return mName;
 }
 
 // ========================================================================
-template <typename T> void RvBaseProperty<T>::Name(string _name)
+TEMPLATE_t void RvBaseProperty<T>::Name(string _name)
 // ========================================================================
 {
   mName = _name;
 }
 
 // ========================================================================
-template <typename T> void RvBaseProperty<T>::Value(T _value) 
+TEMPLATE_t void RvBaseProperty<T>::Value(T _value) 
 // ========================================================================
 {
   mValue = _value;
@@ -81,7 +80,7 @@ template <typename T> void RvBaseProperty<T>::Value(T _value)
 }
 
 // ======================================================================== 
-template <typename T> T RvBaseProperty<T>::Value() const
+TEMPLATE_t T RvBaseProperty<T>::Value() const
 // ========================================================================
 {
   if (IsValid()) return mValue;
@@ -91,28 +90,28 @@ template <typename T> T RvBaseProperty<T>::Value() const
 
 // Helper Function
 // ========================================================================
-template <typename T> void RvBaseProperty<T>::Print() const 
+TEMPLATE_t void RvBaseProperty<T>::Print() const 
 // ========================================================================
 {
   cout << Name() << " = " << Value() << endl;
 }
 
 // ========================================================================
-template <typename T> void RvBaseProperty<T>::ClearValid()
+TEMPLATE_t void RvBaseProperty<T>::ClearValid()
 // ========================================================================
 {
   mValid = false;
 }
 
 // ========================================================================
-template <typename T> void RvBaseProperty<T>::SetValid()
+TEMPLATE_t void RvBaseProperty<T>::SetValid()
 // ========================================================================
 {
   mValid = true;
 }
 
 // ========================================================================
-template <typename T> bool RvBaseProperty<T>::IsValid() const
+TEMPLATE_t bool RvBaseProperty<T>::IsValid() const
 // ========================================================================
 {
   return mValid;
