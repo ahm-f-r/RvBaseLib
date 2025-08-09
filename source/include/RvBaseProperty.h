@@ -16,7 +16,7 @@ template <typename T> class RvBaseProperty
     string            mName {"Undefined"};    
     T                 mValue;
     bool              mValid {false};
-    static uint64_t   mBasePropertyRefCount;
+    static uint64_t   mRefCount;
 
   public :
     explicit RvBaseProperty(string _name, T _value);
@@ -32,10 +32,11 @@ template <typename T> class RvBaseProperty
     T       Value() const;
 
     // Helper Function
-    void    Print() const;
-    void    ClearValid();
-    void    SetValid();
-    bool    IsValid() const;
+    uint64_t  RefCount() const;
+    void      Print() const;
+    void      ClearValid();
+    void      SetValid();
+    bool      IsValid() const;
 };
 
 #endif
