@@ -3,7 +3,7 @@
 - Add helper + lambda functions
 - Add defines
 - Add deep + shallow copy
-- Write tests for =, == operators and copy constructors
+- ~~Integrate GTest~~
 - Add move constructor
 
 ### Base Factory
