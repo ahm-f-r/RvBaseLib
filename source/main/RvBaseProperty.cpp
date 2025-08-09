@@ -2,7 +2,7 @@
 
 using namespace std;
 
-template <typename T> uint64_t RvBaseProperty<T>::mBasePropertyRefCount = 0;
+template <typename T> uint64_t RvBaseProperty<T>::mRefCount = 0;
 
 // ========================================================================
 template <typename T> RvBaseProperty<T>::RvBaseProperty(
@@ -13,14 +13,14 @@ template <typename T> RvBaseProperty<T>::RvBaseProperty(
 // ========================================================================
 {
   SetValid();
-  ++mBasePropertyRefCount;
+  ++mRefCount;
 }
 
 // ========================================================================
 template <typename T> RvBaseProperty<T>::~RvBaseProperty()
 // ========================================================================
 {
-  --mBasePropertyRefCount;
+  --mRefCount;
 }
 
 // ========================================================================
@@ -30,6 +30,7 @@ template <typename T> RvBaseProperty<T>::RvBaseProperty(RvBaseProperty const & _
   // TODO: Check T == {int, uint8_t, uint32_t, uint64_t, string, bool}
   Name    ( _other.Name()     );
   Value   ( _other.Value()    );
+  ++mRefCount;
   return;
 
   cout << "[Error] Type mismatch. Aborting." << endl;
@@ -90,6 +91,13 @@ template <typename T> T RvBaseProperty<T>::Value() const
 }
 
 // Helper Function
+// ========================================================================
+template <typename T> uint64_t RvBaseProperty<T>::RefCount() const 
+// ========================================================================
+{
+  return RvBaseProperty<T>::mRefCount;
+}
+
 // ========================================================================
 template <typename T> void RvBaseProperty<T>::Print() const 
 // ========================================================================
