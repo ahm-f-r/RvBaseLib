@@ -1,5 +1,5 @@
 CXX       := g++
-CXXFLAGS  := -pedantic-errors -Wall -Wextra -Werror -std=c++20
+CXXFLAGS  := -pedantic-errors -Wall -Wextra -Werror -Wdeprecated -std=c++17
 LDFLAGS   := -L/usr/lib -lstdc++ -lm
 ROOT_DIR  := $(PWD)
 BUILD_DIR := $(ROOT_DIR)/build
@@ -7,9 +7,19 @@ OBJ_DIR   := $(BUILD_DIR)/objects
 BIN_DIR   := $(BUILD_DIR)/bin
 INC_DIR   := $(ROOT_DIR)/source/include
 DFN_DIR   := $(ROOT_DIR)/source/defines
+GTST_DIR  := $(ROOT_DIR)/source/tests/g_tests
 #TARGET    := Passed as an argument from cmd prompt.
-INCLUDE   := -I$(INC_DIR) -I$(DFN_DIR)
-SRC       := $(wildcard $(ROOT_DIR)/source/main/*.cpp) $(wildcard $(ROOT_DIR)/source/tests/sanity_tests/*.cpp)
+INCLUDE   := -I$(INC_DIR) -I$(DFN_DIR) -I$(GTST_DIR)
+SRC       := $(wildcard $(ROOT_DIR)/source/main/*.cpp)
+
+ifeq ($(GTEST), 1)
+	TARGET += run_gtests
+	SRC += $(wildcard $(ROOT_DIR)/source/tests/g_tests/*.cpp)
+	LDFLAGS += -lgtest -lgtest_main -pthread
+else
+	TARGET += run_sanity
+	SRC += $(wildcard $(ROOT_DIR)/source/tests/sanity_tests/*.cpp)
+endif
 
 OBJECTS   := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 DEPENDENCIES := $(OBJECTS:.o=.d)
@@ -49,4 +59,3 @@ info:
 	@echo "[*] Sources:         ${SRC}         "
 	@echo "[*] Objects:         ${OBJECTS}     "
 	@echo "[*] Dependencies:    ${DEPENDENCIES}"
-                       

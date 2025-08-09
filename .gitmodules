@@ -1,0 +1,3 @@
+[submodule "source/extern/googletest"]
+	path = source/extern/googletest
+	url = https://github.com/ahm-f-r/googletest.git
