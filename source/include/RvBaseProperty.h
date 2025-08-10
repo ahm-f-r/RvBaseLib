@@ -8,9 +8,11 @@
 #include <vector>
 #include <utility>
 
+#include "RvBaseCommon.d"
+
 using namespace std;
 
-template <typename T> class RvBaseProperty
+TEMPLATE_t class RvBaseProperty
 {
   private :
     string            mName {"Undefined"};    
@@ -33,7 +35,7 @@ template <typename T> class RvBaseProperty
 
     // Helper Function
     uint64_t  RefCount() const;
-    void      Print() const;
+    string    AsString() const;
     void      ClearValid();
     void      SetValid();
     bool      IsValid() const;

@@ -13,67 +13,42 @@
 
 using namespace std;
 
+variant<bool, string, uint64_t> GetVariant(bool _arg) {
+  return variant<bool, string, uint64_t>(_arg);
+}
+
+variant<bool, string, uint64_t> GetVariant(string _arg) {
+  return variant<bool, string, uint64_t>(_arg);
+}
+
+variant<bool, string, uint64_t> GetVariant(uint64_t _arg) {
+  return variant<bool, string, uint64_t>(_arg);
+}
+
 int main () {
 
-  RvBaseProperty<uint64_t> const * prop0 = new RvBaseProperty<uint64_t>("uint64_t", 99);
-  prop0->Print();
+  shared_ptr<RvBaseObject> rv0 = make_shared<RvBaseObject>("Mother", 0);
+  rv0->Property("String",                     GetVariant(string("Lachryma")));
+  rv0->Property("UInt64",                     GetVariant(43ull));
+  rv0->Property("Bool",                       GetVariant(false));
 
+  rv0->ChildObj("Child0", 0);
+  rv0->ChildObj("Child0")->Property("String", GetVariant(string("Piecefield")));
+  rv0->ChildObj("Child0")->Property("UInt64", GetVariant(77ull));
+  rv0->ChildObj("Child0")->Property("Bool",   GetVariant(true));
 
-  RvBaseProperty<bool> const * prop1 = new RvBaseProperty<bool>("bool", true);
-  prop1->Print();
+  rv0->ChildObj("Child1", 1);
+  rv0->ChildObj("Child1")->Property("String", GetVariant(string("Satanize")));
+  rv0->ChildObj("Child1")->Property("UInt64", GetVariant(97ull));
+  rv0->ChildObj("Child1")->Property("Bool",   GetVariant(false));
 
-  RvBaseProperty<string> const * prop2 = new RvBaseProperty<string>("string", "hello");
-  prop2->Print();
+  shared_ptr<RvBaseObject> rv1 = rv0->ChildObj("Child1");
+  rv1->ChildObj("GrandChild0", 0);
+  rv1->ChildObj("GrandChild0")->Property("String",  GetVariant(string("Griftwood")));
+  rv1->ChildObj("GrandChild0")->Property("UInt64",  GetVariant(32ull));
+  rv1->ChildObj("GrandChild0")->Property("Bool",    GetVariant(true));
 
-  shared_ptr<RvBaseObject> rv0 = make_shared<RvBaseObject>("Parent",     0);
-  shared_ptr<RvBaseObject> rv1 = make_shared<RvBaseObject>("Child",      1, rv0);
-  shared_ptr<RvBaseObject> rv2 = make_shared<RvBaseObject>("GrandChild", 2, rv1);
-  shared_ptr<RvBaseObject> rv3 = make_shared<RvBaseObject>("GrandChild", 3, rv1);
-
-  cout << "Name: " << rv0->Name() << endl;
-  cout << "Name: " << rv1->Name() << endl;
-  cout << "Name: " << rv2->Name() << endl;
-  cout << "Name: " << rv3->Name() << endl;
-
-  cout << "Id: " << rv0->Id() << endl;
-  cout << "Id: " << rv1->Id() << endl;
-  cout << "Id: " << rv2->Id() << endl;
-  cout << "Id: " << rv3->Id() << endl;
-  
-  cout << "Scope: " << rv0->Scope() << endl;
-  cout << "Scope: " << rv1->Scope() << endl;
-  cout << "Scope: " << rv2->Scope() << endl;
-  cout << "Scope: " << rv3->Scope() << endl;
-
-  variant<bool, string, uint64_t> val0 = "value";
-  variant<bool, string, uint64_t> val1 = 55ull;
-  variant<bool, string, uint64_t> val2 = false;
-
-  rv0->Property("string",   val0);  
-  rv0->Property("uint64_t", val1);
-  rv0->Property("bool",     val2);
-  
-  cout  << "string = " 
-        << (
-          rv0->Property("string").has_value() ? 
-            get<string>(rv0->Property("string").value()) : 
-            static_cast<string>(0)
-          )
-        << endl; 
-  cout  << "uint64_t = " 
-        << (
-          rv0->Property("uint64_t").has_value() ? 
-            get<uint64_t>(rv0->Property("uint64_t").value()) : 
-            static_cast<uint64_t>(0)
-          )
-        << endl; 
-  cout  << "bool = "
-        << (
-          rv0->Property("bool").has_value() ? 
-            get<bool>(rv0->Property("bool").value()) : 
-            static_cast<bool>(0)
-          )
-        << endl; 
+  cout << rv0->ObjectHierarchyAsString() << endl;
 
   return 0;
 }

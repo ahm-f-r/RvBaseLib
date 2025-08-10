@@ -53,13 +53,13 @@ class RvBaseRegisterFieldObject : public RvBaseObject {
     }
 
     // ========================================================================
-    template <typename T> void Property(string _name, T _value) {
+    TEMPLATE_t void Property(string _name, T _value) {
     // ========================================================================
       Field<T>(_name, _value);
     }
 
     // ========================================================================
-    template <typename T> optional<T> Property(string _name) const {
+    TEMPLATE_t optional<T> Property(string _name) const {
     // ========================================================================
       return Field<T>(_name).has_value() ? Field<T>(_name).value() : 0;
     }
