@@ -11,8 +11,10 @@
 #include <memory>
 #include <optional>
 #include <variant>
+#include <stack>
 
 #include "RvBaseCommon.d"
+#include "RvBaseUtils.h"
 #include "RvBaseProperty.h"
 
 using namespace std;
@@ -37,7 +39,7 @@ class RvBaseObject {
       shared_ptr<RvBaseObject>
     > mChildObjPool  {};
 
-    static uint64_t mBaseObjectRefCount;
+    static uint64_t mRefCount;
 
   public :
     explicit RvBaseObject(
@@ -50,7 +52,7 @@ class RvBaseObject {
     bool operator==(RvBaseObject const & _other);
 
     shared_ptr<const RvBaseObject> Parent() const;
-    void Parent( shared_ptr<const RvBaseObject> _parent);
+    void Parent(shared_ptr<const RvBaseObject> _parent);
 
     uint64_t  Id() const;
     void      Id(uint64_t _id);
@@ -64,6 +66,9 @@ class RvBaseObject {
     shared_ptr<RvBaseObject> ChildObj(string _name) const;
     void ChildObj(string _name, uint64_t _id);
 
+    string  PropsAsString(uint64_t _level = 0) const;
+    string  ChildObjsAsString(stack<string> & _str_stack, uint64_t _level = 0) const;
+    string  ObjectHierarchyAsString() const;
     string  Scope() const;
     void    ClearPropertyPool();
     void    ClearChildObjPool();

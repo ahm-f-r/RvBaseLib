@@ -35,7 +35,7 @@ TEMPLATE_t class RvBaseProperty
 
     // Helper Function
     uint64_t  RefCount() const;
-    void      Print() const;
+    string    AsString() const;
     void      ClearValid();
     void      SetValid();
     bool      IsValid() const;
