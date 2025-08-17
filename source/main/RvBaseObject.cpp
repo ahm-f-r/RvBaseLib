@@ -332,7 +332,10 @@ string RvBaseObject::ChildObjsAsString(stack<string> & _str_stack, uint64_t _lev
   return result;
 }
 
-string RvBaseObject::ObjectHierarchyAsString() const {
+// ========================================================================
+string RvBaseObject::ObjectHierarchyAsString() const
+// ========================================================================
+{
   stack<string> str_stack {};
   return ChildObjsAsString(str_stack, 0);
 }
