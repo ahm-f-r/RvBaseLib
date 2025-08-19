@@ -66,9 +66,14 @@ class RvBaseObject {
     shared_ptr<RvBaseObject> ChildObj(string _name) const;
     void ChildObj(string _name, uint64_t _id);
 
-    string  PropsAsString(uint64_t _level = 0) const;
-    string  ChildObjsAsString(stack<string> & _str_stack, uint64_t _level = 0) const;
-    string  ObjectHierarchyAsString() const;
+    string  PropsAsIndentedString(uint64_t _level = 0) const;
+    string  ChildObjsAsIndentedString(stack<string> & _str_stack, uint64_t _level = 0) const;
+    string  ObjectHierarchyAsIndentedString() const;
+
+    string  PropsAsCsvString() const;
+    string  ChildObjsAsCsvString(stack<string> & _str_stack, uint64_t _level = 0) const;
+    string  ObjectHierarchyAsCsvString() const;
+
     string  Scope() const;
     void    ClearPropertyPool();
     void    ClearChildObjPool();

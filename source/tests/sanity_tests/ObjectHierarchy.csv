@@ -1,0 +1,12 @@
+Mother_0,Bool,Bool,0
+Mother_0,String,String,Lachryma
+Mother_0,UInt64,UInt64,43
+Mother_0.Child1_1,Bool,Bool,0
+Mother_0.Child1_1,String,String,Satanize
+Mother_0.Child1_1,UInt64,UInt64,97
+Mother_0.Child1_1.GrandChild0_0,Bool,Bool,1
+Mother_0.Child1_1.GrandChild0_0,String,String,Griftwood
+Mother_0.Child1_1.GrandChild0_0,UInt64,UInt64,32
+Mother_0.Child0_0,Bool,Bool,1
+Mother_0.Child0_0,String,String,Piecefield
+Mother_0.Child0_0,UInt64,UInt64,77

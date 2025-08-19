@@ -2,9 +2,12 @@
 #define RV_BASE_UTILS_H
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <queue>
 #include <regex>
+#include <vector>
 
 #include "RvBaseEnums.h"
 
@@ -61,17 +64,23 @@ namespace RvBaseScopeUtils {
   static inline bool MatchScope(queue<string> & _pattern, queue<string> & _object)
   // ==========================================================================
   {
-    string pattern;
-    string object;
+    string pattern {};
+    string object  {};
     
     do {
-      pattern += _pattern.front() + "__";
+      pattern += _pattern.front();
       _pattern.pop();
+      if (not _pattern.empty()) {
+        pattern += "__";
+      }
     } while (not _pattern.empty());
 
     do {
-      object += _object.front() + "__";
+      object += _object.front();
       _object.pop();
+      if (not _object.empty()) {
+        object += "__";
+      }
     } while (not _object.empty());
 
     regex star_replace("\\*");
@@ -84,6 +93,42 @@ namespace RvBaseScopeUtils {
     cout << "RegExPattern : " << wildcard_pattern << endl; 
     cout << "Match: "         << boolalpha << result << endl;
     return result;
+  }
+
+  // ==========================================================================
+  static inline void ReadCsvFile(string const & _filename, vector<vector<string> > & _table)
+  // ==========================================================================
+  {
+    ifstream file(_filename);
+    if (!file.is_open()) {
+        cerr << "Failed to open file: " << _filename << endl;
+        assert(false);
+    }
+    string line;
+    while (getline(file, line)) {
+      vector<string> row;
+      stringstream ss(line);
+      string cell;
+      while (getline(ss, cell, ',')) {
+        row.push_back(cell);
+      }
+      _table.push_back(row);
+    }
+    file.close();
+  }
+
+  // ==========================================================================
+  static inline void WriteCsvFile(string const & _filename, string const & _csv_string)
+  // ==========================================================================
+  {
+    ofstream file(_filename);
+    if (!file.is_open()) {
+        cerr << "Failed to open file: " << _filename << endl;
+        assert(false);
+    }
+    file << _csv_string;
+    file.flush();
+    file.close();
   }
 }
 

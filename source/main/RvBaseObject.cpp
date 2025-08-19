@@ -280,7 +280,7 @@ void RvBaseObject::CopyChildObjPool(RvBaseObject const & _other, bool _merge, bo
 }
 
 // ========================================================================
-string RvBaseObject::PropsAsString(uint64_t _level) const
+string RvBaseObject::PropsAsIndentedString(uint64_t _level) const
 // ========================================================================
 {
   string   line_body    {};
@@ -312,15 +312,15 @@ string RvBaseObject::PropsAsString(uint64_t _level) const
 }
 
 // ========================================================================
-string RvBaseObject::ChildObjsAsString(stack<string> & _str_stack, uint64_t _level) const
+string RvBaseObject::ChildObjsAsIndentedString(stack<string> & _str_stack, uint64_t _level) const
 // ========================================================================
 {
   string    result {""};
   uint64_t  level  {++_level};
   for (auto const & item : mChildObjPool) {
-    (item.second->ChildObjsAsString(_str_stack, level));
+    (item.second->ChildObjsAsIndentedString(_str_stack, level));
   }
-  _str_stack.push(PropsAsString(_level));
+  _str_stack.push(PropsAsIndentedString(_level));
 
   if ((level-1) == 0) {
     _str_stack.push("\n");
@@ -333,9 +333,77 @@ string RvBaseObject::ChildObjsAsString(stack<string> & _str_stack, uint64_t _lev
 }
 
 // ========================================================================
-string RvBaseObject::ObjectHierarchyAsString() const
+string RvBaseObject::ObjectHierarchyAsIndentedString() const
 // ========================================================================
 {
   stack<string> str_stack {};
-  return ChildObjsAsString(str_stack, 0);
+  return ChildObjsAsIndentedString(str_stack, 0);
+}
+
+// ========================================================================
+string RvBaseObject::ObjectHierarchyAsCsvString() const
+// ========================================================================
+{
+  stack<string> str_stack {};
+  return ChildObjsAsCsvString(str_stack, 0);
+}
+
+// ========================================================================
+string RvBaseObject::ChildObjsAsCsvString(stack<string> & _str_stack, uint64_t _level) const
+// ========================================================================
+{
+  string    result {""};
+  uint64_t  level  {++_level};
+  for (auto const & item : mChildObjPool) {
+    (item.second->ChildObjsAsCsvString(_str_stack, level));
+  }
+  _str_stack.push(PropsAsCsvString());
+
+  if ((level-1) == 0) {
+    //_str_stack.push("\n");
+    while(!_str_stack.empty()) {
+      result += _str_stack.top();
+      _str_stack.pop();
+    }
+  }
+  return result;
+}
+
+// ========================================================================
+string RvBaseObject::PropsAsCsvString() const
+// ========================================================================
+{
+  string   line_delim   {","};
+  string   line_start   {Scope()};
+  string   line_body    {};
+  string   line_end     {"\n"};
+
+  // Print own properties
+  for (auto const & item : mPropertyPool) {
+    if (Property(item.first).has_value()) {
+      string value;
+      string type;
+      if (holds_alternative<bool>(Property(item.first).value())) {
+        type  = "Bool"; 
+        value = to_string(get<bool>(Property(item.first).value()));
+      }
+      else if (holds_alternative<uint64_t>(Property(item.first).value())) {
+        type  = "UInt64";
+        value = to_string(get<uint64_t>(Property(item.first).value()));
+      }
+      else if (holds_alternative<string>(Property(item.first).value())) {
+        type  = "String";
+        value = get<string>(Property(item.first).value());
+      }
+      line_body += line_start;
+      line_body += line_delim;
+      line_body += item.first;
+      line_body += line_delim;
+      line_body += type;
+      line_body += line_delim;
+      line_body += value;
+      line_body += line_end;
+    }
+  }
+  return line_body;
 }

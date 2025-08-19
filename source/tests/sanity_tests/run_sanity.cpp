@@ -48,7 +48,25 @@ int main () {
   rv1->ChildObj("GrandChild0")->Property("UInt64",  GetVariant(32ull));
   rv1->ChildObj("GrandChild0")->Property("Bool",    GetVariant(true));
 
-  cout << rv0->ObjectHierarchyAsString() << endl;
+  cout << rv0->ObjectHierarchyAsIndentedString() << endl;
+  
+  cout << " --- " << endl;
+  string csv_string {rv0->ObjectHierarchyAsCsvString()};
+  cout << " --- " << endl;
+  cout << csv_string << endl;
+  RvBaseScopeUtils::WriteCsvFile("./source/tests/sanity_tests/ObjectHierarchy.csv", csv_string);
+  cout << " --- " << endl;
+  vector<vector<string> > table {};
+  RvBaseScopeUtils::ReadCsvFile("./source/tests/sanity_tests/ObjectHierarchy.csv", table);
+
+  for (auto const & row : table ) {
+    string row_elems {};
+    for (auto const & cell : row) {
+      row_elems += cell;
+      row_elems += " ";
+    }
+    cout << row_elems << endl;
+  }
 
   return 0;
 }
