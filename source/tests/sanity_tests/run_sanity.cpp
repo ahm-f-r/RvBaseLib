@@ -96,5 +96,13 @@ int main () {
   RvBaseObject::ConfigurePropsFromCsv("./source/tests/sanity_tests/Pattern.csv");
   cout << rv0->ObjectHierarchyAsIndentedString() << endl;
 
+  cout << " ======================================================================== " << endl;
+  cout << "  * Save New Object Hierarchy as CSV string.                              " << endl;
+  cout << "  * Print and save string to a new CSV file.                              " << endl;
+  cout << " ======================================================================== " << endl;
+  string new_csv_string {rv0->ObjectHierarchyAsCsvString()};
+  cout << new_csv_string << endl;
+  RvBaseScopeUtils::WriteCsvFile("./source/tests/sanity_tests/Modified.csv", new_csv_string);
+
   return 0;
 }
