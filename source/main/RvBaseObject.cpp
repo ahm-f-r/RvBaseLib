@@ -1,7 +1,59 @@
 #include "RvBaseObject.h"
 
-
 uint64_t RvBaseObject::mRefCount = 0;
+vector<shared_ptr<RvBaseObject> > RvBaseObject::mObjRefPool = {};
+
+// ========================================================================
+void RvBaseObject::ConfigurePropsFromCsv(string _filename)
+// ========================================================================
+{
+  vector<vector<string> > props_table {};
+  RvBaseScopeUtils::ReadCsvFile(_filename, props_table);
+  for (auto row : props_table) 
+  {
+    string col_scope  = row.at(RvCsvEnums::cScope);
+    string col_name   = row.at(RvCsvEnums::cName);
+    string col_type   = row.at(RvCsvEnums::cType);
+    variant<bool, string, uint64_t> col_value;
+    if (col_type == "Bool"  ) col_value = bool(stoull((row.at(RvCsvEnums::cValue))));
+    if (col_type == "UInt64") col_value = stoull((row.at(RvCsvEnums::cValue)));
+    if (col_type == "String") col_value = row.at(RvCsvEnums::cValue);
+    for (auto & item : mObjRefPool)
+    {
+      queue<string> trg_pattern = RvBaseScopeUtils::SplitScope( col_scope     );
+      queue<string> obj_scope   = RvBaseScopeUtils::SplitScope( item->Scope() );
+      if (RvBaseScopeUtils::MatchScope(trg_pattern, obj_scope)) 
+      {
+        item->Property(col_name, col_value);
+      }
+    }
+  }
+}
+
+// ========================================================================
+void RvBaseObject::PrintRefPool()
+// ========================================================================
+{
+  for (auto const & item : mObjRefPool) {
+    cout << item->Scope() << endl;
+  }
+}
+
+// ========================================================================
+void RvBaseObject::ClearRefPool()
+// ========================================================================
+{
+  for (auto iter = mObjRefPool.begin(); iter != mObjRefPool.end(); ++iter) {
+    mObjRefPool.erase(iter);
+  }
+}
+
+// ========================================================================
+void RvBaseObject::RegisterWithRefPool(shared_ptr<RvBaseObject> & _context)
+// ========================================================================
+{
+  mObjRefPool.emplace_back(_context);
+}
 
 // ========================================================================
 RvBaseObject::RvBaseObject(
@@ -203,9 +255,9 @@ string RvBaseObject::Scope() const
 // ========================================================================
 {
   if (sParent != nullptr) {
-    return (sParent->Scope() + ("." + Name() + "_" + to_string(Id())));
+    return (sParent->Scope() + "." + Name());
   }
-  return string(Name() + "_" + to_string(Id()));
+  return Name();
 }
 
 // ========================================================================

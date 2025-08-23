@@ -1,0 +1,12 @@
+Father,Age,UInt64,77
+Father,Employed,Bool,0
+Father,Name,String,Tobias
+Father.Child1,Age,UInt64,31
+Father.Child1,Employed,Bool,0
+Father.Child1,Name,String,Per
+Father.Child1.GrandChild0,Age,UInt64,10
+Father.Child1.GrandChild0,Employed,Bool,0
+Father.Child1.GrandChild0,Name,String,Rain
+Father.Child0,Age,UInt64,30
+Father.Child0,Employed,Bool,1
+Father.Child0,Name,String,Sylvain

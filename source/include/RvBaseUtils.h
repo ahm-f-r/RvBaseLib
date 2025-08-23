@@ -91,7 +91,7 @@ namespace RvBaseScopeUtils {
     bool result = regex_match(object, wildcard_regex);
     cout << "ObjectScope  : " << object << endl;
     cout << "RegExPattern : " << wildcard_pattern << endl; 
-    cout << "Match: "         << boolalpha << result << endl;
+    cout << "Match        : " << boolalpha << result << endl;
     return result;
   }
 
@@ -101,7 +101,7 @@ namespace RvBaseScopeUtils {
   {
     ifstream file(_filename);
     if (!file.is_open()) {
-        cerr << "Failed to open file: " << _filename << endl;
+        cerr << "(ERROR) RvBaseScopeUtils::ReadCsvFile() Failed to open file: " << _filename << endl;
         assert(false);
     }
     string line;
@@ -123,8 +123,8 @@ namespace RvBaseScopeUtils {
   {
     ofstream file(_filename);
     if (!file.is_open()) {
-        cerr << "Failed to open file: " << _filename << endl;
-        assert(false);
+      cerr << "(ERROR) RvBaseScopeUtils::WriteCsvFile() Failed to open file: " << _filename << endl;
+      assert(false);
     }
     file << _csv_string;
     file.flush();

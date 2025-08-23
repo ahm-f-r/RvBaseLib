@@ -1,6 +1,6 @@
 CXX       := g++
 CXXFLAGS  := -pedantic-errors -Wall -Wextra -Werror -Wdeprecated -std=c++17
-LDFLAGS   := -L/usr/lib -lstdc++ -lm
+LDFLAGS   := -L/usr/lib -lm
 ROOT_DIR  := $(PWD)
 BUILD_DIR := $(ROOT_DIR)/build
 OBJ_DIR   := $(BUILD_DIR)/objects

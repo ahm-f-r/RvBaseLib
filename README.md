@@ -1,27 +1,29 @@
 ## TODO : 
 ### Base Object, Property
-- Add helper + lambda functions
-- Add defines
-- Add deep + shallow copy
 - ~~Integrate GTest~~
-- Add move constructor
-
-### Base Factory
-- Replicate uvm_db
-
-~~### Object Manager~~
-~~- Add for every Object type~~
+- Add move constructor.
+- Add deep + shallow copy.
+- Add tests for Deep/Shallow Copy.
+- Add checks against Property type.
+- Add props to child object directly. 
 
 ### Derived Objects
-- Add data, addr, addr region, data pool.
+- Add ObjectNode.
+- Add TimeSeries Object.
 
-### RiscV
-- Add Instr
-- Add Op
-- Add Register 
+### Props Configurator
+- ~~Add ScopeUtils~~
+- Add Configurator.
+- Add Sanity tests.
 
-### uArch
-- Add instr -> Op decode
-- Add Cache
-- Add Memory
-- Add Addr Manager
+### Pipeline Manager
+- Generic Functions - advance(), stall(), flush(), sleep().
+- Check if this can be integrated with Pipelines.
+
+### Serialization
+- Add Serialize/Deserialize methods.
+- Add python helper functions for serialization/deserialization.
+- Integrate interactive python.
+
+### Varilator Components
+- TBD

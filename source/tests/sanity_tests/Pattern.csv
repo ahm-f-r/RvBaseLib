@@ -1,0 +1,7 @@
+Father,Parent,String,GrandFather
+*,Surname,String,Ghoul
+Father.Child1,Mother,String,Mathilda
+*.Child0,Mother,String,Mathilda
+*.Child1.*,GrandMother,String,Mathilda
+*.Child1.GrandChild0,Books,String,SydneySheldon
+*.Child1.*,Sports,String,Football

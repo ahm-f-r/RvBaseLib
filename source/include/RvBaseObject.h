@@ -21,9 +21,9 @@ using namespace std;
 
 class RvBaseObject {
   private :
-    shared_ptr<const RvBaseObject> sParent {};
-    uint64_t                  mId     {};
-    string                    mName   {};
+    shared_ptr<const RvBaseObject>  sParent {};
+    uint64_t                        mId     {};
+    string                          mName   {};
 
     map<
       string, 
@@ -40,6 +40,7 @@ class RvBaseObject {
     > mChildObjPool  {};
 
     static uint64_t mRefCount;
+    static vector<shared_ptr<RvBaseObject> > mObjRefPool;
 
   public :
     explicit RvBaseObject(
@@ -79,6 +80,11 @@ class RvBaseObject {
     void    ClearChildObjPool();
     void    CopyPropertyPool(RvBaseObject const & _other, bool _merge = false, bool deep_copy = false);
     void    CopyChildObjPool(RvBaseObject const & _other, bool _merge = false, bool deep_copy = false);
+
+    static void ConfigurePropsFromCsv(string _filename);
+    static void ClearRefPool();
+    static void RegisterWithRefPool(shared_ptr<RvBaseObject> & _context);
+    static void PrintRefPool();
 };
 
 #endif
