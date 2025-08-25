@@ -13,7 +13,7 @@
 
 ### Props Configurator
 - ~~Add ScopeUtils~~
-- Add Configurator.
+- ~~Add Configurator.~~
 - Add Sanity tests.
 
 ### Pipeline Manager

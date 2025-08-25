@@ -9,12 +9,12 @@ void RvBaseObject::ConfigurePropsFromCsv(string _filename)
 {
   vector<vector<string> > props_table {};
   RvBaseScopeUtils::ReadCsvFile(_filename, props_table);
-  for (auto row : props_table) 
+  for (auto row : props_table)
   {
     string col_scope  = row.at(RvCsvEnums::cScope);
     string col_name   = row.at(RvCsvEnums::cName);
     string col_type   = row.at(RvCsvEnums::cType);
-    variant<bool, string, uint64_t> col_value;
+    VARIANT_t col_value;
     if (col_type == "Bool"  ) col_value = bool(stoull((row.at(RvCsvEnums::cValue))));
     if (col_type == "UInt64") col_value = stoull((row.at(RvCsvEnums::cValue)));
     if (col_type == "String") col_value = row.at(RvCsvEnums::cValue);
@@ -153,73 +153,71 @@ void RvBaseObject::Name(string _name)
 
 // Methods to access Properties and Child Objects
 // ========================================================================
-optional<variant<bool, string, uint64_t> > RvBaseObject::Property(string _name) const
+optional< VARIANT_t > RvBaseObject::Property(string _name) const
 // ========================================================================
 {
   auto const & it = mPropertyPool.find(_name);
   if (it == mPropertyPool.end()) {
     return nullopt;
   }
-  if (holds_alternative<shared_ptr<RvBaseProperty<bool> > >(it->second)) {
-    auto result = get<shared_ptr<RvBaseProperty<bool> > >(it->second);
-    variant<bool, string, uint64_t> prop = result->Value();
+  if (CHECK_VALUE(shared_ptr<RvBaseProperty<bool> >, it->second)) {
+    auto result = GET_SHARED(bool, it->second);
+    VARIANT_t prop = result->Value();
     return make_optional(prop);
   }
-  if (holds_alternative<shared_ptr<RvBaseProperty<string> > >(it->second)) {
-    auto result = get<shared_ptr<RvBaseProperty<string> > >(it->second);
-    variant<bool, string, uint64_t> prop = result->Value();
+  if (CHECK_VALUE(shared_ptr<RvBaseProperty<string> >, it->second)) {
+    auto result = GET_SHARED(string, it->second);
+    VARIANT_t prop = result->Value();
     return make_optional(prop);
   }
-  if (holds_alternative<shared_ptr<RvBaseProperty<uint64_t> > >(it->second)) {
-    auto result = get<shared_ptr<RvBaseProperty<uint64_t> > >(it->second);
-    variant<bool, string, uint64_t> prop = result->Value();
+  if (CHECK_VALUE(shared_ptr<RvBaseProperty<uint64_t> >, it->second)) {
+    auto result = GET_SHARED(uint64_t, it->second);
+    VARIANT_t prop = result->Value();
     return make_optional(prop);
   }
   return nullopt;
 }
 
 // ========================================================================
-void RvBaseObject::Property(string _name, variant<bool, string, uint64_t> _value)
+void RvBaseObject::Property(string _name, VARIANT_t _value)
 // ========================================================================
 {
-  bool is_bool_prop = holds_alternative<bool>(_value);
-  bool is_uint_prop = holds_alternative<uint64_t>(_value);
-  bool is_char_prop = holds_alternative<string>(_value);
+  bool is_bool_prop = CHECK_VALUE(bool, _value);
+  bool is_uint_prop = CHECK_VALUE(uint64_t, _value);
+  bool is_char_prop = CHECK_VALUE(string, _value);
 
   if (Property(_name).has_value()) {
     if (is_bool_prop) {
-      if (holds_alternative<bool>(Property(_name).value())) {
-        auto sptr_prop = get<shared_ptr<RvBaseProperty<bool> > >(mPropertyPool[_name]);
+      if (CHECK_VALUE(bool, Property(_name).value())) {
+        auto sptr_prop = GET_SHARED(bool, mPropertyPool[_name]);
         sptr_prop->Value(get<bool>(_value));
         return;
       }
     }
     if (is_uint_prop) {
-      if (holds_alternative<uint64_t>(Property(_name).value())) {
-        auto sptr_prop = get<shared_ptr<RvBaseProperty<uint64_t> > >(mPropertyPool[_name]);
+      if (CHECK_VALUE(uint64_t, Property(_name).value())) {
+        auto sptr_prop = GET_SHARED(uint64_t, mPropertyPool[_name]);
         sptr_prop->Value(get<uint64_t>(_value));
         return;
       }
     }
     if (is_char_prop) {
-      if (holds_alternative<string>(Property(_name).value())) {
-        auto sptr_prop = get<shared_ptr<RvBaseProperty<string> > >(mPropertyPool[_name]);
+      if (CHECK_VALUE(string, Property(_name).value())) {
+        auto sptr_prop = GET_SHARED(string, mPropertyPool[_name]);
         sptr_prop->Value(get<string>(_value));
         return;
       }
     }
   }
-  variant<shared_ptr<RvBaseProperty<bool> >,
-          shared_ptr<RvBaseProperty<string> >,
-          shared_ptr<RvBaseProperty<uint64_t> > > new_prop;
+  SHARED_VARIANT_t new_prop;
   if (is_bool_prop) {
-    new_prop = make_shared<RvBaseProperty<bool> >(_name, get<bool>(_value));
+    new_prop = MAKE_SHARED(bool, _name, _value);
   }
   if (is_uint_prop) {
-    new_prop = make_shared<RvBaseProperty<uint64_t> >(_name, get<uint64_t>(_value));
+    new_prop = MAKE_SHARED(uint64_t, _name, _value);
   }
   if (is_char_prop) {
-    new_prop = make_shared<RvBaseProperty<string> >(_name, get<string>(_value));
+    new_prop = MAKE_SHARED(string, _name, _value);
   }
   mPropertyPool.insert(make_pair(_name, new_prop));
 }
@@ -285,24 +283,23 @@ void RvBaseObject::CopyPropertyPool(RvBaseObject const & _other, bool _merge, bo
   bool is_bool_prop {false};
   bool is_uint_prop {false};
   bool is_char_prop {false};
-  variant<bool, string, uint64_t> new_value;
+  VARIANT_t new_value;
   if (!_merge) {
     ClearPropertyPool();
   }
   for (auto const & item : _other.mPropertyPool) {
     if (deep_copy) {
-      cout << item.first << endl;
-      is_bool_prop = _other.Property(item.first).has_value() and holds_alternative<bool>(_other.Property(item.first).value());
-      is_uint_prop = _other.Property(item.first).has_value() and holds_alternative<uint64_t>(_other.Property(item.first).value());
-      is_char_prop = _other.Property(item.first).has_value() and holds_alternative<string>(_other.Property(item.first).value());
+      is_bool_prop = _other.HAS_VALUE(item.first) and CHECK_VALUE(bool, Property(item.first).value());
+      is_uint_prop = _other.HAS_VALUE(item.first) and CHECK_VALUE(uint64_t, Property(item.first).value());
+      is_char_prop = _other.HAS_VALUE(item.first) and CHECK_VALUE(string, Property(item.first).value());
       if (is_bool_prop) {
-        new_value = get<bool>(_other.Property(item.first).value());
+        new_value = GET_VALUE(bool, item.first);
       }
       if (is_uint_prop) {
-        new_value = get<uint64_t>(_other.Property(item.first).value());
+        new_value = GET_VALUE(uint64_t, item.first);
       }
       if (is_char_prop) {
-        new_value = get<string>(_other.Property(item.first).value());
+        new_value = GET_VALUE(string, item.first);
       }
       Property(item.first, new_value);
       continue;
@@ -348,14 +345,14 @@ string RvBaseObject::PropsAsIndentedString(uint64_t _level) const
   for (auto const & item : mPropertyPool) {
     if (Property(item.first).has_value()) {
       string result;
-      if (holds_alternative<bool>(Property(item.first).value())) {
-        result = to_string(get<bool>(Property(item.first).value()));
+      if (CHECK_VALUE(bool, Property(item.first).value())) {
+        result = to_string(GET_VALUE(bool, item.first));
       }
-      else if (holds_alternative<uint64_t>(Property(item.first).value())) {
-        result = to_string(get<uint64_t>(Property(item.first).value()));
+      else if (CHECK_VALUE(uint64_t, Property(item.first).value())) {
+        result = to_string(GET_VALUE(uint64_t, item.first));
       }
-      else if (holds_alternative<string>(Property(item.first).value())) {
-        result = get<string>(Property(item.first).value());
+      else if (CHECK_VALUE(string, Property(item.first).value())) {
+        result = GET_VALUE(string, item.first);
       }
       line_body += (line_indent + "| " + item.first + " : " + result + line_end);
     }
@@ -435,17 +432,17 @@ string RvBaseObject::PropsAsCsvString() const
     if (Property(item.first).has_value()) {
       string value;
       string type;
-      if (holds_alternative<bool>(Property(item.first).value())) {
+      if (CHECK_VALUE(bool, Property(item.first).value())) {
         type  = "Bool"; 
-        value = to_string(get<bool>(Property(item.first).value()));
+        value = to_string(GET_VALUE(bool, item.first));
       }
-      else if (holds_alternative<uint64_t>(Property(item.first).value())) {
+      else if (CHECK_VALUE(uint64_t, Property(item.first).value())) {
         type  = "UInt64";
-        value = to_string(get<uint64_t>(Property(item.first).value()));
+        value = to_string(GET_VALUE(uint64_t, item.first));
       }
-      else if (holds_alternative<string>(Property(item.first).value())) {
+      else if (CHECK_VALUE(string, Property(item.first).value())) {
         type  = "String";
-        value = get<string>(Property(item.first).value());
+        value = GET_VALUE(string, item.first);
       }
       line_body += line_start;
       line_body += line_delim;

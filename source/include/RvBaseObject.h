@@ -25,19 +25,8 @@ class RvBaseObject {
     uint64_t                        mId     {};
     string                          mName   {};
 
-    map<
-      string, 
-      variant<
-        shared_ptr<RvBaseProperty<bool> >,
-        shared_ptr<RvBaseProperty<string> >,
-        shared_ptr<RvBaseProperty<uint64_t> >
-      > 
-    > mPropertyPool {};
-
-    map<
-      string, 
-      shared_ptr<RvBaseObject>
-    > mChildObjPool  {};
+    map<string, SHARED_VARIANT_t>           mPropertyPool {};
+    map<string, shared_ptr<RvBaseObject> >  mChildObjPool  {};
 
     static uint64_t mRefCount;
     static vector<shared_ptr<RvBaseObject> > mObjRefPool;
@@ -46,7 +35,7 @@ class RvBaseObject {
     explicit RvBaseObject(
       string                          _name, 
       uint64_t                        _id,
-       shared_ptr<const RvBaseObject> _parent = nullptr);
+      shared_ptr<const RvBaseObject> _parent = nullptr);
    ~RvBaseObject();
     RvBaseObject(RvBaseObject const & _other);
     RvBaseObject & operator=(RvBaseObject const & _other);
@@ -61,8 +50,8 @@ class RvBaseObject {
     string    Name() const;
     void      Name(string _name); 
 
-    optional<variant<bool, string, uint64_t> > Property(string _name) const;
-    void Property(string _name, variant<bool, string, uint64_t> _value);
+    optional< VARIANT_t > Property(string _name) const;
+    void Property(string _name, VARIANT_t _value);
 
     shared_ptr<RvBaseObject> ChildObj(string _name) const;
     void ChildObj(string _name, uint64_t _id);
