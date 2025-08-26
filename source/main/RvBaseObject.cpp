@@ -1,7 +1,7 @@
 #include "RvBaseObject.h"
 
 uint64_t RvBaseObject::mRefCount = 0;
-vector<shared_ptr<RvBaseObject> > RvBaseObject::mObjRefPool = {};
+vector<shared_ptr<RvBaseObject> > RvBaseObject::mGlobalRefPool = {};
 
 // ========================================================================
 void RvBaseObject::ConfigurePropsFromCsv(string _filename)
@@ -31,38 +31,36 @@ void RvBaseObject::ConfigurePropsFromCsv(string _filename)
 }
 
 // ========================================================================
-void RvBaseObject::PrintRefPool()
+void RvBaseObject::PrintGlobalObjRefPool()
 // ========================================================================
 {
-  for (auto const & item : mObjRefPool) {
+  for (auto const & item : mGlobalRefPool) {
     cout << item->Scope() << endl;
   }
 }
 
 // ========================================================================
-void RvBaseObject::ClearRefPool()
+void RvBaseObject::ClearGlobalRefPool()
 // ========================================================================
 {
-  for (auto iter = mObjRefPool.begin(); iter != mObjRefPool.end(); ++iter) {
-    mObjRefPool.erase(iter);
+  for (auto iter = mGlobalRefPool.begin(); iter != mGlobalRefPool.end(); ++iter) {
+    mGlobalRefPool.erase(iter);
   }
 }
 
 // ========================================================================
-void RvBaseObject::RegisterWithRefPool(shared_ptr<RvBaseObject> & _context)
+void RvBaseObject::RegisterWithGlobalRefPool(SHARED_OBJECT_t & _context)
 // ========================================================================
 {
-  mObjRefPool.emplace_back(_context);
+  mGlobalRefPool.emplace_back(_context);
 }
 
 // ========================================================================
 RvBaseObject::RvBaseObject(
-  string      _name,
-  uint64_t    _id,
-  shared_ptr<const RvBaseObject> _parent) :
-    sParent (_parent),
-    mId     (_id),
-    mName   (_name)
+  string                          _name,
+  shared_ptr<const RvBaseObject>  _parent) :
+    mName   (_name),
+    sParent (_parent)
 // ========================================================================
 {
   ++mRefCount;
@@ -77,9 +75,8 @@ RvBaseObject::~RvBaseObject()
 
 // ========================================================================
 RvBaseObject::RvBaseObject(RvBaseObject const & _other) :
-  sParent (_other.Parent()),
-  mId     (_other.Id()),
-  mName   (_other.Name())
+  mName   (_other.Name()),
+  sParent (_other.Parent())
 // ========================================================================
 {
   ++mRefCount;
@@ -93,7 +90,6 @@ RvBaseObject & RvBaseObject::operator=(RvBaseObject const & _other)
 // ========================================================================
 {
   Parent(_other.Parent());
-  Id(_other.Id());
   Name(_other.Name());
   // Note: Existing entries in the pool will be cleared.
   CopyChildObjPool(_other);
@@ -124,17 +120,17 @@ void RvBaseObject::Parent (shared_ptr<const RvBaseObject> _parent)
 }
 
 // ========================================================================
-uint64_t RvBaseObject::Id() const
+uint64_t RvBaseObject::UniqueId() const
 // ========================================================================
 {
-  return mId;
+  return mUniqueId;
 }
 
 // ========================================================================
-void RvBaseObject::Id(uint64_t _id)
+void RvBaseObject::UniqueId(uint64_t _unique_id)
 // ========================================================================
 {
-  mId = _id;
+  mUniqueId = _unique_id;
 }
 
 // ========================================================================
@@ -234,17 +230,17 @@ shared_ptr<RvBaseObject> RvBaseObject::ChildObj(string _name) const
 }
 
 // ========================================================================
-void RvBaseObject::ChildObj(string _name, uint64_t _id)
+void RvBaseObject::ChildObj(string _name, bool _register_with_glob_pool)
 // ========================================================================
 {
-  if (ChildObj(_name) and (ChildObj(_name)->Id() == _id)) {
+  if (ChildObj(_name)) {
     return;
   }
   shared_ptr<RvBaseObject> new_child = make_shared<RvBaseObject>(
     _name,
-    _id,
     make_shared<const RvBaseObject>(*this));
   mChildObjPool[_name] = new_child;
+  RegisterWithGlobalObjRefPool(new_child);
 }
 
 // Helper Functions
